@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background: #111; color: #D4AF37; font-family: 'Segoe UI', sans-serif; text-align: center; padding: 40px; }
+        .container { background: #000; border: 2px solid #D4AF37; padding: 30px; border-radius: 10px; display: inline-block; }
+        .logo { font-weight: bold; font-size: 18px; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 5px #D4AF37;}
+        .flex-lights { display: flex; justify-content: center; gap: 20px; }
+        .light { width: 60px; height: 60px; background-color: #222; border: 3px solid #555; border-radius: 50%; }
+        .light.red { background-color: #ff0000; border-color: #ff6666; box-shadow: 0 0 35px #ff0000; }
+        .light.green { background-color: #00ff00; border-color: #66ff66; box-shadow: 0 0 35px #00ff00; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">METAVERSE SIM RACING</div>
+        <div class="flex-lights">
+            <div id="l1" class="light"></div>
+            <div id="l2" class="light"></div>
+            <div id="l3" class="light"></div>
+            <div id="l4" class="light"></div>
+            <div id="l5" class="light"></div>
+        </div>
+    </div>
+
+    <script>
+        const socket = new WebSocket('ws://127.0.0.1:8080');
+
+        socket.onmessage = function(event) {
+            const msg = JSON.parse(event.data);
+            if (msg.action === "update_lights") {
+                resetLights();
+                for(let i=1; i<=msg.count; i++) { document.getElementById('l'+i).classList.add('red'); }
+            } 
+            else if (msg.action === "GO") {
+                for(let i=1; i<=5; i++) { document.getElementById('l'+i).className = 'light green'; }
+            }
+            else if (msg.action === "RESET") {
+                resetLights();
+            }
+        };
+
+        function resetLights() {
+            for(let i=1; i<=5; i++) document.getElementById('l'+i).className = 'light';
+        }
+    </script>
+</body>
+</html>
